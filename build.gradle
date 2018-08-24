@@ -1,0 +1,64 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'war'
+war {
+    baseName = 'CustomerDemo'
+    version =  '1.0-SNAPSHOT'
+}
+
+group = 'com.bosch.mcms'
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://maven.bosch-si.com/content/repositories/im3-releases"
+    }
+
+}
+
+configurations {
+	providedRuntime
+}
+
+bootRun {
+    // allows ./gradlew bootRun -Dspring.profiles.active=dev
+    systemProperties System.properties
+}
+
+ext {
+	springCloudVersion = 'Edgware.SR3'
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+	compile("io.springfox:springfox-swagger2:2.6.1")
+    compile("io.springfox:springfox-swagger-ui:2.6.1")
+	compile("com.google.code.gson:gson:1.7.2")
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	compile('org.springframework.cloud:spring-cloud-starter-hystrix')
+	compile('org.springframework.cloud:spring-cloud-starter-hystrix-dashboard')
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	
+}
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+}
+}
